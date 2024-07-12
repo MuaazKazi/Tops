@@ -1,0 +1,172 @@
+- Write SQL query to solve the problem given below . For which you need to create three tables named as Bank, Account holder and Loan table.
+
+
+-CREATE TABLES:
+
+mysql> create Table Bank(Branch_id int primary key,Branch_name varchar(250), Branch_city varchar(250));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> create Table Acc_holder(Acc_holder_id int primary key,Acc_no varchar(250), Acc_holder_name varchar(250),city varchar(250),contact varchar(250),date_acc_created date,acc_status varchar(50),account_type varchar(50),Balance decimal(10,2));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> CREATE TABLE Loan (Loan_no int PRIMARY KEY,Branch_id int,acc_holder_id int,loan_amount decimal(10,2),Loan_type varchar(50),FOREIGN KEY (Branch_id) REFERENCES Bank (Branch_id), FOREIGN KEY (acc_holder_id) REFERENCES Acc_holder (Acc_holder_id));
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> describe Bank;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| Branch_id   | int          | NO   | PRI | NULL    |       |
+| Branch_name | varchar(250) | YES  |     | NULL    |       |
+| Branch_city | varchar(250) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> describe Acc_holder;
++------------------+---------------+------+-----+---------+-------+
+| Field            | Type          | Null | Key | Default | Extra |
++------------------+---------------+------+-----+---------+-------+
+| Acc_holder_id    | int           | NO   | PRI | NULL    |       |
+| Acc_no           | varchar(250)  | YES  |     | NULL    |       |
+| Acc_holder_name  | varchar(250)  | YES  |     | NULL    |       |
+| city             | varchar(250)  | YES  |     | NULL    |       |
+| contact          | varchar(250)  | YES  |     | NULL    |       |
+| date_acc_created | date          | YES  |     | NULL    |       |
+| acc_status       | varchar(50)   | YES  |     | NULL    |       |
+| account_type     | varchar(50)   | YES  |     | NULL    |       |
+| Balance          | decimal(10,2) | YES  |     | NULL    |       |
++------------------+---------------+------+-----+---------+-------+
+9 rows in set (0.00 sec)
+
+mysql> describe Loan;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| Loan_no       | int           | NO   | PRI | NULL    |       |
+| Branch_id     | int           | YES  | MUL | NULL    |       |
+| acc_holder_id | int           | YES  | MUL | NULL    |       |
+| loan_amount   | decimal(10,2) | YES  |     | NULL    |       |
+| Loan_type     | varchar(50)   | YES  |     | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+-INSERT VALUES IN TABLES:
+
+
+mysql> insert into Bank values(1,'BOB','Baroda'),(2,'BOI','Surat'),(3,'Axis Bank','Ahemdabad');
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> insert into Acc_holder values(1, 'A001','Kazi Muaaz', 'Surat', '1234567890', '2018-10-15','Active','savings', 5000.00),(2, 'A002', 'Yogesh', 'Ahemdabad', '0987654321', '2018-01-15', 'Active', 'savings', 5500.00),(3, 'A003', 'Dharmin Tandel', 'Baroda', '1000054321', '2018-01-15', 'Active', 'current', 4000
+.00),(4, 'A004', 'Alex', 'Surat', '5432167890', '2018-07-10', 'terminated', 'savings', 500.00);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into Loan values (1,1,1,5000,'home'),(2,2,3,4000,'Car'),(3,3,4,6000,'Gold');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from Bank;
++-----------+-------------+-------------+
+| Branch_id | Branch_name | Branch_city |
++-----------+-------------+-------------+
+|         1 | BOB         | Baroda      |
+|         2 | BOI         | Surat       |
+|         3 | Axis Bank   | Ahemdabad   |
++-----------+-------------+-------------+
+3 rows in set (0.01 sec)
+
+mysql> select * from Acc_holder;
++---------------+--------+-----------------+-----------+------------+------------------+------------+--------------+---------+
+| Acc_holder_id | Acc_no | Acc_holder_name | city      | contact    | date_acc_created | acc_status | account_type | Balance |
++---------------+--------+-----------------+-----------+------------+------------------+------------+--------------+---------+
+|             1 | A001   | Kazi Muaaz      | Surat     | 1234567890 | 2018-10-15       | Active     | savings      | 5000.00 |
+|             2 | A002   | Yogesh          | Ahemdabad | 0987654321 | 2018-01-15       | Active     | savings      | 5500.00 |
+|             3 | A003   | Dharmin Tandel  | Baroda    | 1000054321 | 2018-01-15       | Active     | current      | 4000.00 |
+|             4 | A004   | Alex            | Surat     | 5432167890 | 2018-07-10       | terminated | savings      |  500.00 |
++---------------+--------+-----------------+-----------+------------+------------------+------------+--------------+---------+
+4 rows in set (0.01 sec)
+
+mysql> select * from Loan;
++---------+-----------+---------------+-------------+-----------+
+| Loan_no | Branch_id | acc_holder_id | loan_amount | Loan_type |
++---------+-----------+---------------+-------------+-----------+
+|       1 |         1 |             1 |     5000.00 | home      |
+|       2 |         2 |             3 |     4000.00 | Car       |
+|       3 |         3 |             4 |     6000.00 | Gold      |
++---------+-----------+---------------+-------------+-----------+
+3 rows in set (0.00 sec)
+
+Q1. Perform intra bank transfer.
+
+mysql> update Acc_holder set Balance = Balance - 100 where Acc_no = 'A001';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update Acc_holder set Balance = Balance + 100 where Acc_no = 'A002';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Acc_holder;
++---------------+--------+-----------------+-----------+------------+------------------+------------+--------------+---------+
+| Acc_holder_id | Acc_no | Acc_holder_name | city      | contact    | date_acc_created | acc_status | account_type | Balance |
++---------------+--------+-----------------+-----------+------------+------------------+------------+--------------+---------+
+|             1 | A001   | Kazi Muaaz      | Surat     | 1234567890 | 2018-10-15       | Active     | savings      | 4900.00 |
+|             2 | A002   | Yogesh          | Ahemdabad | 0987654321 | 2018-01-15       | Active     | savings      | 5700.00 |
+|             3 | A003   | Dharmin Tandel  | Baroda    | 1000054321 | 2018-01-15       | Active     | current      | 4000.00 |
+|             4 | A004   | Alex            | Surat     | 5432167890 | 2018-07-10       | terminated | savings      |  500.00 |
++---------------+--------+-----------------+-----------+------------+------------------+------------+--------------+---------+
+4 rows in set (0.00 sec)
+
+Q2.Also fetch the details of the account holder who are related from the same city.
+
+mysql> select * from Acc_holder where city = 'surat';
++---------------+--------+-----------------+-------+------------+------------------+------------+--------------+---------+
+| Acc_holder_id | Acc_no | Acc_holder_name | city  | contact    | date_acc_created | acc_status | account_type | Balance |
++---------------+--------+-----------------+-------+------------+------------------+------------+--------------+---------+
+|             1 | A001   | Kazi Muaaz      | Surat | 1234567890 | 2018-10-15       | Active     | savings      | 4900.00 |
+|             4 | A004   | Alex            | Surat | 5432167890 | 2018-07-10       | terminated | savings      |  500.00 |
++---------------+--------+-----------------+-------+------------+------------------+------------+--------------+---------+
+2 rows in set (0.00 sec)
+
+Q3.Write a query to fetch account number and account holder name, whose accounts were created after 15th of any month.
+
+mysql> select Acc_no, Acc_holder_name from Acc_Holder where DAY(date_account_created) > 15;
++------------+---------------------+
+| Acc_no     | Acc_holder_name     |
++------------+---------------------+
+| A001       | Muaaz Kazi          |
+| A002       | Yogesh              |
+| A003       | Dharmin Tandel      |
++------------+---------------------+
+
+Q4.Write a query to display the city name and count the branches in that city. Give the count of branches an alias name of Count_Branch.
+
+mysql> select Branch_city as city, count(Branch_id) as Count_Branch from Bank group by Branch_city;
++-----------+--------------+
+| city      | Count_Branch |
++-----------+--------------+
+| Baroda    |            1 |
+| Surat     |            1 |
+| Ahemdabad |            1 |
++-----------+--------------+
+3 rows in set (0.01 sec)
+
+Q5.Write a query to display the account holder’s id, account holder’s name, branch id, and loan amount for people who have taken loans. (NOTE : use sql join concept to solve the query).
+
+mysql> select AH.Acc_holder_id, AH.Acc_holder_name, L.Branch_id, L.loan_amount from Acc_Holder AH join Loan L on AH.Acc_holder_id = L.Acc_holder_id;
++---------------+-----------------+-----------+-------------+
+| Acc_holder_id | Acc_holder_name | Branch_id | loan_amount |
++---------------+-----------------+-----------+-------------+
+|             1 | Kazi Muaaz      |         1 |     5000.00 |
+|             3 | Dharmin Tandel  |         2 |     4000.00 |
+|             4 | Alex            |         3 |     6000.00 |
++---------------+-----------------+-----------+-------------+
+3 rows in set (0.00 sec)
+
+
+
+
+
+
+
